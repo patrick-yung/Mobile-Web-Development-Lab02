@@ -3,133 +3,68 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(myApp());
+  runApp(DieRollApp());
 }
 
-class myApp extends StatefulWidget {
+class DieRollApp extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return Calculator();
+    return _DieRollState();
   }
 }
 
-class Calculator extends State<myApp> {
-  double totalIncome = 0;
-  double overtimeIncome = 0;
-  double regularIncome = 0;
-  double incomeTax = 0;
-  String status = "";
-
-  TextEditingController hourWorked = TextEditingController();
-  TextEditingController hourRate = TextEditingController();
+class _DieRollState extends State<DieRollApp> {
+  var randomInt = Random().nextInt(6) + 1;
+  var randomInt2 = Random().nextInt(6) + 1;
   
-  void totalPay(double hours, double rate) {
-    if(hours <= 40){
-      totalIncome =  hours * rate;
-    }else {
-      totalIncome = (hours-40)*rate*1.5 + 40*rate;
-    }
-  }
-  void regularPay(double hours, double rate) {
-    if(hours <= 40){
-      regularIncome =  hours * rate;
-    }else {
-      regularIncome = 40*rate;
-    }
-  }
-
-  void overtimePay(double hours, double rate) {
-    if(hours <= 40){
-      overtimeIncome = 0;
-    }else {
-      overtimeIncome = (hours-40)*rate*1.5;
-    }
-  }
-
-  void tax(double payment) {
-    incomeTax = payment * 0.18;
-  }
-
-  void CalculatorFunction() {
-
-    if (hourWorked.text.isEmpty || hourRate.text.isEmpty) {
-      setState(() {
-        status = "Please enter both hours and rate";
-      });
-      return;
-    }
-
-    RegExp validNumber = RegExp(r'^\d+(\.\d+)?$');
-  
-    if (!validNumber.hasMatch(hourWorked.text) || !validNumber.hasMatch(hourRate.text)) {
-      setState(() {
-        status = "Please enter valid positive numbers only (e.g., 40 or 15.5)";
-      });
-      return;
-    }
-        double hours = double.parse(hourWorked.text);
-    double rate = double.parse(hourRate.text);
-    if(hours < 0 || rate < 0) {
-      setState(() {
-        status = "Invalid Hours or Rate Entered";
-      });
-      return;
-    }
-
+  void rollDie() {
     setState(() {
-      status = "";
-      totalPay(hours, rate);
-      regularPay(hours, rate);
-      overtimePay(hours, rate);
-      tax(totalIncome);
+      randomInt2 = Random().nextInt(6) + 1;
+      randomInt = Random().nextInt(6) + 1;
     });
-
   }
-  
-
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Income Calculator'),
+          title: const Text('Roll two Die App'),
         ),
-        body: SafeArea(
+        body: Center(
           child: Column(
-            children : [ 
-
-              TextField(
-                controller: hourWorked,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Enter Number of Hours Worked',
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                'Roll two Die',
+                style: TextStyle(
+                  fontSize: 24, 
+                  color: Color.fromARGB(255, 21, 146, 223)
                 ),
               ),
-              TextField(
-                controller: hourRate,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Enter Hour Rate',
-                ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    '../assets/dice-$randomInt.png', 
+                    width: 150, 
+                    height: 150
+                  ),
+                  const SizedBox(width: 20),
+                  Image.asset(
+                    '../assets/dice-$randomInt2.png', 
+                    width: 150, 
+                    height: 150
+                  ),
+                ],
               ),
-
+              const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: CalculatorFunction,
-                child: const Text('Calculate'),
+                onPressed: rollDie, 
+                child: const Text('Roll')
               ),
-              if (status.isNotEmpty) 
-                Text(status),
-
-              Text("Total Income: \$${totalIncome.toStringAsFixed(2)}"),
-              Text("Regular Income: \$${regularIncome.toStringAsFixed(2)}"),
-              Text("Overtime Income: \$${overtimeIncome.toStringAsFixed(2)}"),
-              Text("Income Tax: \$${incomeTax.toStringAsFixed(2)}"),
-
-
-              const Text("301520576"),
-              const Text("Yung Pak Hong Patrick"),
-            ]
+            ],
           ),
         ),
       ),
