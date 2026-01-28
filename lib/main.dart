@@ -51,7 +51,23 @@ class Calculator extends State<myApp> {
   }
 
   void CalculatorFunction() {
-    double hours = double.parse(hourWorked.text);
+
+    if (hourWorked.text.isEmpty || hourRate.text.isEmpty) {
+      setState(() {
+        status = "Please enter both hours and rate";
+      });
+      return;
+    }
+
+    RegExp validNumber = RegExp(r'^\d+(\.\d+)?$');
+  
+    if (!validNumber.hasMatch(hourWorked.text) || !validNumber.hasMatch(hourRate.text)) {
+      setState(() {
+        status = "Please enter valid positive numbers only (e.g., 40 or 15.5)";
+      });
+      return;
+    }
+        double hours = double.parse(hourWorked.text);
     double rate = double.parse(hourRate.text);
     if(hours < 0 || rate < 0) {
       setState(() {
@@ -79,7 +95,7 @@ class Calculator extends State<myApp> {
         appBar: AppBar(
           title: const Text('Income Calculator'),
         ),
-        body: Center(
+        body: SafeArea(
           child: Column(
             children : [ 
 
